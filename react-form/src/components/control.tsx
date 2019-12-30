@@ -4,36 +4,45 @@ import { makeFactory } from '../utils';
 const [register, get] = makeFactory();
 
 export interface ControlProps<T extends any> {
-    value: T;
-    onChange(): T;
-    validator?(value: T): boolean;
+  value: T;
+  onChange?(value: T): void;
 }
 
-export type ControlFC<Props extends ControlProps<any>> = React.FC<Props>;
+export type ControlFC<T> = React.FC<ControlProps<T>>;
 
-export interface IControl<Props extends ControlProps<any>> {
-    name: string;
-    component: ControlFC<Props>;
+export interface IControl<T> {
+  name: string;
+  component: ControlFC<ControlProps<T>>;
+  validator(value: T): boolean;
 }
 
-export const InputControl: ControlFC<ControlProps<string>> = ({}) => {
-    const [value, setValue] = useState<string>('');
-    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        setValue(event.target.value);
-    }
-    return <input value={value} onChange={handleChange} />;
+export const InputControl: ControlFC<string> = ({ value, onChange }) => {
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    onChange && onChange(event.target.value);
+  }
+  return <input value={value} onChange={handleChange} />;
 };
 
+function useValues(controls: any) {
+  const [map, setMap] = useState(new Map<string, any>());
+  map.set('', {});
+  return map;
+}
+
 interface FormProps {
-    controls: string[];
+  controls: IControl<any>[];
 }
 
 export const Form: React.FC<FormProps> = ({ controls }) => {
-    return (
-        <div>
-            {controls.map(control => (
-                <div></div>
-            ))}
-        </div>
-    );
+  const formValue = useValues(controls);
+  return (
+    <div>
+      {controls.map(control => (
+        <control.component
+          value={formValue.get(control.name).value}
+          onChange={formValue.get(control.name).onChange}
+        ></control.component>
+      ))}
+    </div>
+  );
 };
