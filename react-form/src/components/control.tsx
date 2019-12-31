@@ -12,7 +12,7 @@ export type ControlFC<T> = React.FC<ControlProps<T>>;
 
 export interface IControl<T> {
   name: string;
-  component: ControlFC<ControlProps<T>>;
+  component: ControlFC<T>;
   validator(value: T): boolean;
 }
 
