@@ -16,6 +16,12 @@ export interface IControl<T> {
   validator(value: T): boolean;
 }
 
+export interface ControlForm {
+  type: string;
+  controls: [];
+  // TODO
+}
+
 export const InputControl: ControlFC<string> = ({ value, onChange }) => {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     onChange && onChange(event.target.value);
@@ -46,3 +52,5 @@ export const Form: React.FC<FormProps> = ({ controls }) => {
     </div>
   );
 };
+
+export function mapControlForm(form: ControlForm) {}
