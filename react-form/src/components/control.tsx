@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { makeFactory } from '../utils';
 
+/* ---- #region Base ---- */
 export interface ControlProps<T extends any> {
   value: T;
   onChange?(value: T): void;
@@ -24,6 +25,11 @@ export interface ControlFormItem extends ControlFormBase {
 
 export type ControlForm = (ControlFormItem | ControlGroup)[];
 
+interface FormProps {
+  controls: IControl<any>[];
+}
+/* ---- #endregion ---- */
+
 export const InputControl: ControlFC<string> = ({ value, onChange }) => {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     onChange && onChange(event.target.value);
@@ -37,10 +43,7 @@ function useValues(controls: any) {
   return map;
 }
 
-interface FormProps {
-  controls: IControl<any>[];
-}
-
+/* ---- #region Form ---- */
 export const Form: React.FC<FormProps> = ({ controls }) => {
   const formValue = useValues(controls);
   return (
@@ -74,8 +77,6 @@ const RenderedControls: React.FC<{ controls: IControl<any>[] }> = ({
   // 将control渲染成数组，返回一个组件，此组件会收集合并所有子组件的值，校验并以事件的形式传出
   return <></>;
 };
-
-/* ---- #region Group ---- */
 /* ---- #endregion ---- */
 
 /* ---- #region Group ---- */
