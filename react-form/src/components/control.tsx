@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { makeFactory } from '../utils';
 
-const [registerGroup, getGroup] = makeFactory();
-
 export interface ControlProps<T extends any> {
   value: T;
   onChange?(value: T): void;
@@ -13,15 +11,18 @@ export type ControlFC<T> = React.FC<ControlProps<T>>;
 export interface IControl<T> {
   name: string;
   component: ControlFC<T>;
-  validator(value: T): boolean;
 }
 
-export interface ControlForm {
-  controls: string[];
-  group?: string;
+export interface ControlFormBase {
   alias: string;
-  // TODO
+  validator(value: any): boolean;
 }
+
+export interface ControlFormItem extends ControlFormBase {
+  type: string;
+}
+
+export type ControlForm = (ControlFormItem | ControlGroup)[];
 
 export const InputControl: ControlFC<string> = ({ value, onChange }) => {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -55,5 +56,40 @@ export const Form: React.FC<FormProps> = ({ controls }) => {
 };
 
 export function mapControlForm(form: ControlForm) {
-  const group = getGroup(form.group);
+  const value = {} as any;
+  form.forEach(item => {
+    value[item.alias] = void 0;
+  });
 }
+
+function makeControlItem(def: ControlFormItem) {}
+
+function makeControlGroup(def: ControlGroup) {
+  const GroupComponent = getGroup(def.groupKey);
+}
+
+const RenderedControls: React.FC<{ controls: IControl<any>[] }> = ({
+  controls
+}) => {
+  // 将control渲染成数组，返回一个组件，此组件会收集合并所有子组件的值，校验并以事件的形式传出
+  return <></>;
+};
+
+/* ---- #region Group ---- */
+/* ---- #endregion ---- */
+
+/* ---- #region Group ---- */
+
+export interface ControlGroup extends ControlFormBase {
+  groupKey: string;
+  controls: ControlFormItem[];
+}
+
+const [registerGroup, getGroup] = makeFactory();
+
+// GroupComponent 只是一个容器， 不处理任何逻辑
+const DefaultGroup: React.FC = ({ children }) => {
+  return <div>{children}</div>;
+};
+
+/* ---- #endregion ---- */
