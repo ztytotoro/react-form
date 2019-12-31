@@ -8,7 +8,7 @@ export type Constructor<T> = new (...args: any[]) => T;
 
 export function makeFactory<T = any>(): [
   (key: string | string[], constructor: Constructor<T>) => void,
-  (key: string) => Constructor<T>
+  (key?: string) => Constructor<T> | null
 ] {
   const store = new Store();
 
@@ -22,7 +22,10 @@ export function makeFactory<T = any>(): [
     }
   };
 
-  const get = (key: string) => {
+  const get = (key?: string) => {
+    if (key === null || key === undefined) {
+      return null;
+    }
     return store.get<Constructor<T>>(key);
   };
 

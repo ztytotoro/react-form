@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { makeFactory } from '../utils';
 
-const [register, get] = makeFactory();
+const [registerGroup, getGroup] = makeFactory();
 
 export interface ControlProps<T extends any> {
   value: T;
@@ -17,8 +17,9 @@ export interface IControl<T> {
 }
 
 export interface ControlForm {
-  type: string;
-  controls: [];
+  controls: string[];
+  group?: string;
+  alias: string;
   // TODO
 }
 
@@ -53,4 +54,6 @@ export const Form: React.FC<FormProps> = ({ controls }) => {
   );
 };
 
-export function mapControlForm(form: ControlForm) {}
+export function mapControlForm(form: ControlForm) {
+  const group = getGroup(form.group);
+}
