@@ -1,31 +1,41 @@
 export class Form {
-    controls: any[] = [];
+  controls: any[] = [];
 }
 
 interface IControlOptions<T> {
-    validator(value: T): boolean;
+  validator(value: T): boolean;
 }
 
 export class FormControl<T extends any> {
-    private _disabled = false;
+  private _disabled = false;
 
-    constructor(private validator?: (value: T) => boolean) {}
+  constructor(private validator?: (value: T) => boolean) {}
 
-    get disabled() {
-        return this._disabled;
-    }
+  get disabled() {
+    return this._disabled;
+  }
 
-    get isValid() {
-        return this.validator?.(this.value) ?? true;
-    }
+  get isValid() {
+    return this.validator?.(this.value) ?? true;
+  }
 
-    value!: T;
+  value!: T;
 
-    enable() {
-        this._disabled = false;
-    }
+  enable() {
+    this._disabled = false;
+  }
 
-    disable() {
-        this._disabled = true;
-    }
+  disable() {
+    this._disabled = true;
+  }
+
+  setValue(newValue: T) {
+    Object.keys(newValue).forEach(key => {
+      this.controlMap.set(key, newValue[key]);
+    });
+  }
+
+  get controlMap() {
+    return new Map<string, any>();
+  }
 }
