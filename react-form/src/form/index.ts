@@ -1,25 +1,26 @@
-export class Form {
-  controls: any[] = [];
-}
+import { Validator } from '../validator';
 
-interface IControlOptions<T> {
-  validator(value: T): boolean;
-}
-
-export class FormControl<T extends any> {
+abstract class FormBase<T extends any> {
   private _disabled = false;
+  private _value!: T;
 
-  constructor(private validator?: (value: T) => boolean) {}
+  constructor(protected validator?: Validator<T>) {}
+
+  get value() {
+    return this._value;
+  }
 
   get disabled() {
     return this._disabled;
   }
 
   get isValid() {
-    return this.validator?.(this.value) ?? true;
+    return this.validator?.(this.value) === null;
   }
 
-  value!: T;
+  get errorTip() {
+    return this.validator?.(this.value) ?? null;
+  }
 
   enable() {
     this._disabled = false;
@@ -30,12 +31,23 @@ export class FormControl<T extends any> {
   }
 
   setValue(newValue: T) {
-    Object.keys(newValue).forEach(key => {
-      this.controlMap.set(key, newValue[key]);
+    this._value = newValue;
+    this.onValueChange(this.value);
+  }
+
+  onValueChange(_: T) {}
+}
+
+export class FormGroup<T extends any> extends FormBase<T> {
+  onValueChange(value: T) {
+    Object.keys(value).forEach(key => {
+      this.controlMap.set(key, value[key]);
     });
   }
 
   get controlMap() {
-    return new Map<string, any>();
+    return new Map<string, FormControl<any> | FormGroup<any>>();
   }
 }
+
+export class FormControl<T extends any> extends FormBase<T> {}
