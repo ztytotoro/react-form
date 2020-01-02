@@ -2,6 +2,36 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+const form = [
+  {
+    kind: 'control',
+    name: 'background-color',
+    type: 'color-selector',
+    default: 'red',
+    validator: (_: string) => true
+  },
+  {
+    kind: 'group',
+    name: 'font',
+    type: 'popover',
+    params: {
+      column: 2
+    },
+    controls: [
+      {
+        kind: 'control',
+        name: 'font-color',
+        type: 'color-selector'
+      },
+      {
+        kind: 'control',
+        name: 'font-size',
+        type: 'input-number'
+      }
+    ]
+  }
+];
+
 const App: React.FC = () => {
   return (
     <div className="App">
@@ -21,6 +51,6 @@ const App: React.FC = () => {
       </header>
     </div>
   );
-}
+};
 
 export default App;
