@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { useControls } from './form';
+import { controls } from './controls';
+
+useControls(controls);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

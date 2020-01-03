@@ -1,36 +1,61 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { FormDefinition, FormItemKind, makeForm } from './form';
+import { RenderedGroup } from './components/group';
+import { ControlType } from './controls/enum';
+import { ColorValidator } from './validators';
 
-const form = [
+const formDef: FormDefinition = [
   {
-    kind: 'control',
+    kind: FormItemKind.Control,
     name: 'background-color',
-    type: 'color-selector',
+    type: ControlType.Input,
+    label: Promise.resolve('背景颜色'),
     default: 'red',
-    validator: (_: string) => true
+    validators: [ColorValidator]
   },
   {
-    kind: 'group',
+    kind: FormItemKind.Group,
     name: 'font',
+    label: Promise.resolve('字体'),
     type: 'popover',
     params: {
       column: 2
     },
+    default: {
+      'font-color': 'black',
+      'font-size': 16
+    },
+    onChange(control) {
+      if (control.value['font-color'] !== 'red') {
+        control.get('font-size')?.disable();
+      } else {
+        control.get('font-size')?.enable();
+      }
+    },
     controls: [
       {
-        kind: 'control',
+        kind: FormItemKind.Control,
         name: 'font-color',
-        type: 'color-selector'
+        label: Promise.resolve('字体颜色'),
+        type: ControlType.Input
       },
       {
-        kind: 'control',
+        kind: FormItemKind.Control,
         name: 'font-size',
-        type: 'input-number'
+        label: Promise.resolve('字体大小'),
+        type: ControlType.InputNumber,
+        default: 17,
+        params: {
+          min: 10
+        }
       }
     ]
   }
 ];
+
+const form = makeForm(formDef);
 
 const App: React.FC = () => {
   return (
@@ -49,6 +74,7 @@ const App: React.FC = () => {
           Learn React
         </a>
       </header>
+      <RenderedGroup group={form}></RenderedGroup>
     </div>
   );
 };
