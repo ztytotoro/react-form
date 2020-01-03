@@ -16,6 +16,7 @@ export abstract class FormBase<
   protected valueChange$ = new Subject<void>();
   protected stateChange$ = new Subject<void>();
   private _visible = true;
+  private _isValid = true;
 
   constructor(private _definition: TDefinition) {
     this.valueChange$.subscribe(() => {
@@ -29,18 +30,7 @@ export abstract class FormBase<
   abstract get group(): FormGroup<any> | null;
 
   get isValid() {
-    return this.errorTips.length === 0;
-  }
-
-  get errorTips() {
-    const errorTips: string[] = [];
-    this.validators?.forEach(v => {
-      const result = v(this.value);
-      if (result) {
-        result.then(str => errorTips.push(str));
-      }
-    });
-    return errorTips;
+    return this._isValid;
   }
 
   validate() {
@@ -52,8 +42,12 @@ export abstract class FormBase<
       }
     });
     if (tasks.length > 0) {
+      this._isValid = false;
       Promise.all(tasks).then(result => this.error$.next(result));
+    } else {
+      this._isValid = true;
     }
+    this.stateChange$.next();
   }
 
   get definition() {

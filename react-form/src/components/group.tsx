@@ -6,7 +6,7 @@ import { useState } from 'react';
 type ControlList = (ControlList | JSX.Element)[];
 
 export function renderGroup(group: FormGroup<any>): ControlList {
-  return group.controlList.map(control => {
+  return group.controlList.map((control, index) => {
     if (control.kind === FormItemKind.Control) {
       return (
         <RenderedControl
@@ -16,7 +16,12 @@ export function renderGroup(group: FormGroup<any>): ControlList {
       );
     }
     if (control.kind === FormItemKind.Group) {
-      return <RenderedGroup group={control as FormGroup<any>}></RenderedGroup>;
+      return (
+        <RenderedGroup
+          key={control.name ?? index}
+          group={control as FormGroup<any>}
+        ></RenderedGroup>
+      );
     }
     return <></>;
   });

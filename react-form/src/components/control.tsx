@@ -9,17 +9,19 @@ export const RenderedControl: React.FC<{
   const [text] = usePromise(control.definition.label);
   const [disabled, setDisabled] = useState(control.disabled);
   const [value, setValue] = useState(control.value);
+  const [isValid, setIsValid] = useState(control.isValid);
   const [errorTips, setErrorTips] = useState<string[]>([]);
   useEffect(() => {
     control.onStateChange(() => {
       setDisabled(control.disabled);
       setValue(control.value);
+      setIsValid(control.isValid);
     });
+    control.onError(errorTips => setErrorTips(errorTips));
   });
   if (Control) {
     const onChange = (value: any) => {
       control.setValue(value);
-      setErrorTips(control.errorTips);
     };
     return (
       <>
@@ -30,9 +32,11 @@ export const RenderedControl: React.FC<{
           params={control.definition.params}
           disabled={disabled}
         ></Control>
-        {errorTips.map((tip, index) => (
-          <label key={index}>{tip}</label>
-        ))}
+        {!isValid ? (
+          errorTips.map((tip, index) => <label key={index}>{tip}</label>)
+        ) : (
+          <></>
+        )}
       </>
     );
   }
