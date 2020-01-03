@@ -7,6 +7,7 @@ import {
   FormDefinition,
   FormItemKind
 } from './definition';
+import { GroupType } from '../groups';
 
 export abstract class FormBase<
   TDefinition extends FormItemBase<any>,
@@ -262,8 +263,11 @@ export class FormGroup<T extends any> extends FormBase<GroupDefinition<T>> {
 export function makeForm(definition: FormDefinition) {
   return new FormGroup({
     kind: FormItemKind.Group,
-    type: 'base',
+    type: GroupType.Column,
     name: '',
-    controls: definition
+    controls: definition,
+    params: {
+      columns: 1
+    }
   });
 }

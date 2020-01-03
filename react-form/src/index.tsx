@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { useControls } from './form';
+import { useControls, useGroups } from './form';
 import { controls } from './controls';
+import { groups } from './groups';
 
 useControls(controls);
+useGroups(groups);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

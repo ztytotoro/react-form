@@ -1,9 +1,13 @@
 import React, { useEffect } from 'react';
-import { FormGroup, FormControl, FormItemKind } from '../form';
+import {
+  FormGroup,
+  FormControl,
+  FormItemKind,
+  getGroup,
+  ControlList
+} from '../form';
 import { RenderedControl } from './control';
 import { useState } from 'react';
-
-type ControlList = (ControlList | JSX.Element)[];
 
 export function renderGroup(group: FormGroup<any>): ControlList {
   return group.controlList.map((control, index) => {
@@ -34,13 +38,18 @@ export const RenderedGroup: React.FC<{
   useEffect(() => {
     group.onStateChange(() => setVisible(group.visible));
   });
-  return (
-    <div
-      style={{
-        display: visible ? 'display' : 'none'
-      }}
-    >
-      {renderGroup(group)}
-    </div>
-  );
+  const Group = getGroup(group.definition.type);
+
+  if (Group) {
+    return (
+      <Group
+        controls={renderGroup(group)}
+        visible={visible}
+        params={group.definition.params}
+      ></Group>
+    );
+  }
+
+  console.warn('Cannot find group: ', group.definition.type);
+  return <></>;
 };
