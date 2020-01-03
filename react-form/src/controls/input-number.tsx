@@ -1,34 +1,31 @@
 import React from 'react';
 import { ControlFC, IControl } from '../form';
 import { ControlType } from './enum';
+import { InputNumber } from 'antd';
 
-export const InputControl: ControlFC<string, InputNumberParams> = ({
-  value,
-  onChange,
-  disabled,
-  params
+export const component: ControlFC<number | undefined, InputNumberParams> = ({
+    value,
+    onChange,
+    disabled,
+    params,
 }) => {
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    onChange && onChange(event.target.value);
-  }
-  return (
-    <input
-      type="number"
-      value={value}
-      onChange={handleChange}
-      disabled={disabled}
-      min={params?.min}
-      max={params?.max}
-    />
-  );
+    return (
+        <InputNumber
+            value={value}
+            onChange={onChange}
+            disabled={disabled}
+            min={params?.min}
+            max={params?.max}
+        ></InputNumber>
+    );
 };
 
-export const InputNumber: IControl = {
-  id: ControlType.InputNumber,
-  component: InputControl
+export const InputNumberControl: IControl = {
+    id: ControlType.InputNumber,
+    component,
 };
 
 export interface InputNumberParams {
-  min: number;
-  max: number;
+    min: number;
+    max: number;
 }

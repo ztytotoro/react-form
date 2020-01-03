@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { FormDefinition, FormItemKind, makeForm } from './form';
 import { RenderedGroup } from './components/group';
@@ -7,87 +6,63 @@ import { ControlType } from './controls/enum';
 import { ColorValidator } from './validators';
 import { GroupType } from './groups';
 
-const formDef: FormDefinition = [
-  {
-    kind: FormItemKind.Control,
-    name: 'background-color',
-    type: ControlType.Input,
-    label: Promise.resolve('背景颜色'),
-    default: 'red',
-    validators: [ColorValidator]
-  },
-  {
-    kind: FormItemKind.Group,
-    name: 'font',
-    label: Promise.resolve('字体'),
-    type: GroupType.Column,
-    params: {
-      column: 2
-    },
-    default: {
-      'font-color': 'black',
-      'font-size': 16
-    },
-    onChange(control) {
-      if (control.value['font-color'] !== 'red') {
-        control.get('font-size')?.disable();
-      } else {
-        control.get('font-size')?.enable();
-      }
-    },
-    controls: [
-      {
+const formDef: FormDefinition = {
+    backgroundColor: {
         kind: FormItemKind.Control,
-        name: 'font-color',
-        label: Promise.resolve('字体颜色'),
-        type: ControlType.Input
-      },
-      {
-        kind: FormItemKind.Control,
-        name: 'font-size',
-        label: Promise.resolve('字体大小'),
-        type: ControlType.InputNumber,
-        default: 17,
+        type: ControlType.Input,
+        label: Promise.resolve('背景颜色'),
+        default: 'red',
+        validators: [ColorValidator],
+    },
+    font: {
+        kind: FormItemKind.Group,
+        label: Promise.resolve('字体'),
+        type: GroupType.Column,
         params: {
-          min: 10
-        }
-      },
-      {
-        kind: FormItemKind.Control,
-        name: 'font-weight',
-        label: Promise.resolve('字体粗细'),
-        type: ControlType.InputNumber,
-        default: 17,
-        params: {
-          min: 10
-        }
-      }
-    ]
-  }
-];
+            column: 2,
+        },
+        default: {
+            fontColor: 'black',
+            fontSize: 16,
+        },
+        onChange(control) {
+            if (control.value['fontColor'] !== 'red') {
+                control.get('fontSize')?.disable();
+            } else {
+                control.get('fontSize')?.enable();
+            }
+        },
+        controls: {
+            fontColor: {
+                kind: FormItemKind.Control,
+                label: Promise.resolve('字体颜色'),
+                type: ControlType.Input,
+            },
+            fontSize: {
+                kind: FormItemKind.Control,
+                label: Promise.resolve('字体大小'),
+                type: ControlType.InputNumber,
+                default: 17,
+                params: {
+                    min: 10,
+                },
+            },
+        },
+    },
+};
 
 const form = makeForm(formDef);
 
+form.onChange(item => console.log(item.value));
+
 const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      <RenderedGroup group={form}></RenderedGroup>
-    </div>
-  );
+    return (
+        <div className="App">
+            <div className="Form">
+                <RenderedGroup group={form}></RenderedGroup>
+            </div>
+        </div>
+    );
 };
 
 export default App;

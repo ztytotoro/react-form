@@ -1,8 +1,24 @@
-.column-container {
-  display: flex;
-  flex-direction: column;
+.ColumnContainer {
+    display: flex;
+    flex-direction: column;
 }
 
-.column-item {
-  display: flex;
+.ColumnItem {
+    display: flex;
+}
+
+.ColumnLabel {
+    margin-bottom: 4px;
+}
+
+.ColumnItem + .ColumnItem {
+    margin-top: 12px;
+}
+
+.ColumnItem > * {
+    flex: 1;
+}
+
+.ColumnItem > * + * {
+    margin-left: 30px;
 }

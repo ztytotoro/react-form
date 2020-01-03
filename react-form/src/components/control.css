@@ -1,0 +1,8 @@
+.FormControl {
+    display: flex;
+    flex-direction: column;
+}
+
+.FormControlLabel {
+    margin-bottom: 4px;
+}

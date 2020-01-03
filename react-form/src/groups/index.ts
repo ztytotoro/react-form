@@ -1,4 +1,4 @@
-import { Column } from './column-group';
+import { ColumnGroup } from './column-group';
 
-export const groups = [Column];
+export const groups = [ColumnGroup];
 export * from './enum';

@@ -1,5 +1,5 @@
-import { InputNumber } from './input-number';
-import { Input } from './input';
+import { InputNumberControl } from './input-number';
+import { InputControl } from './input';
 
-export const controls = [InputNumber, Input];
+export const controls = [InputNumberControl, InputControl];
 export * from './enum';
