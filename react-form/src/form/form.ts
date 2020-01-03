@@ -205,6 +205,7 @@ export class FormGroup<T extends any> extends FormBase<GroupDefinition<T>> {
     return Array.from(this.controlMap.values());
   }
 
+  // ignore name?
   get value() {
     const value = {} as T;
     this.controlMap.forEach((v, k) => {
@@ -213,6 +214,7 @@ export class FormGroup<T extends any> extends FormBase<GroupDefinition<T>> {
     return value;
   }
 
+  // ignore name?
   setValue(newValue: T | null) {
     this.controlMap.forEach((v, k) => {
       v.setValue(newValue?.[k] ?? null);
@@ -237,6 +239,7 @@ export class FormGroup<T extends any> extends FormBase<GroupDefinition<T>> {
     });
   }
 
+  // ignore name?
   get(path: string | string[]): FormGroup<any> | FormControl<any> | null {
     if (typeof path === 'string') {
       path = path.split('.');
@@ -257,6 +260,10 @@ export class FormGroup<T extends any> extends FormBase<GroupDefinition<T>> {
   dispose() {
     super.dispose();
     this.controlList.forEach(control => control.dispose());
+  }
+
+  get isLogicalGroup() {
+    return this.name === undefined;
   }
 }
 
