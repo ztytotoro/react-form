@@ -1,4 +1,6 @@
 export enum ControlType {
-  InputNumber = 'InputNumber',
-  Input = 'Input'
+    InputNumber = 'InputNumber',
+    Input = 'Input',
+    Select = 'Select',
+    Color = 'Color',
 }

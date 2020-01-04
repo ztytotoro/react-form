@@ -8,11 +8,7 @@ export interface ColumnParams {
     columns: number;
 }
 
-export const Component: GroupFC<ColumnParams> = ({
-    controls,
-    params,
-    label,
-}) => {
+export const Group: GroupFC<ColumnParams> = ({ controls, params, label }) => {
     const splitedControls = split(controls, params?.columns ?? 2);
     const [text] = usePromise(label ?? Promise.resolve(null));
     return (
@@ -44,5 +40,5 @@ function split<T>(target: T[], step: number) {
 
 export const ColumnGroup: IGroup = {
     id: GroupType.Column,
-    component: Component,
+    component: Group,
 };

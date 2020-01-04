@@ -3,7 +3,7 @@ import { ControlFC, IControl } from '../form';
 import { ControlType } from './enum';
 import { InputNumber } from 'antd';
 
-export const component: ControlFC<number | undefined, InputNumberParams> = ({
+export const Control: ControlFC<number | undefined, InputNumberParams> = ({
     value,
     onChange,
     disabled,
@@ -22,7 +22,7 @@ export const component: ControlFC<number | undefined, InputNumberParams> = ({
 
 export const InputNumberControl: IControl = {
     id: ControlType.InputNumber,
-    component,
+    component: Control,
 };
 
 export interface InputNumberParams {

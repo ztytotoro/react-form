@@ -1,0 +1,16 @@
+.ColorWraper .sketch-picker {
+    box-shadow: none !important;
+}
+
+.ColorPopover .ant-popover-inner-content {
+    padding: 3px;
+}
+
+.ColorBlock {
+    border: none;
+    outline: none;
+    border-radius: 2.2px;
+    cursor: pointer;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132),
+        0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+}

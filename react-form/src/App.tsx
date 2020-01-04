@@ -9,7 +9,7 @@ import { GroupType } from './groups';
 const formDef: FormDefinition = {
     backgroundColor: {
         kind: FormItemKind.Control,
-        type: ControlType.Input,
+        type: ControlType.Color,
         label: Promise.resolve('背景颜色'),
         default: 'red',
         validators: [ColorValidator],
@@ -36,7 +36,7 @@ const formDef: FormDefinition = {
             fontColor: {
                 kind: FormItemKind.Control,
                 label: Promise.resolve('字体颜色'),
-                type: ControlType.Input,
+                type: ControlType.Color,
             },
             fontSize: {
                 kind: FormItemKind.Control,
