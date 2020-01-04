@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { usePromise } from '../hooks';
 import { FormControl, getControl } from '../form';
 import './control.css';
+import { PromisedText } from './text';
 
 export const RenderedControl: React.FC<{
     control: FormControl<any>;
 }> = ({ control }) => {
     const Control = getControl(control.definition.type);
-    const [text] = usePromise(control.definition.label);
     const [disabled, setDisabled] = useState(control.disabled);
     const [value, setValue] = useState(control.value);
     const [isValid, setIsValid] = useState(control.isValid);
@@ -22,11 +21,17 @@ export const RenderedControl: React.FC<{
     });
     if (Control) {
         const onChange = (value: any) => {
-            control.setValue(value);
+            if (value !== control.value) {
+                control.setValue(value);
+            }
         };
         return (
             <div className="FormControl">
-                <label className="FormControlLabel">{text}</label>
+                <label className="FormControlLabel">
+                    <PromisedText
+                        textPromise={control.definition.label}
+                    ></PromisedText>
+                </label>
                 <Control
                     value={value}
                     onChange={onChange}

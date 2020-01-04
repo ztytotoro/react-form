@@ -30,6 +30,7 @@ export interface FormItemBase<T extends any> {
     default?: T;
     validators?: Validator<T>[];
     params?: any;
+    groupParams?: any;
     onChange?(
         formItem: this extends { kind: FormItemKind.Control }
             ? FormControl<any>
@@ -63,3 +64,9 @@ export interface IGroup {
 }
 
 export type ControlList = (ControlList | JSX.Element)[];
+
+export type PickValue<T extends FormDefinition> = {
+    [K in keyof T]: T[K] extends GroupDefinition<any>
+        ? PickValue<T[K]['controls']>
+        : any;
+};

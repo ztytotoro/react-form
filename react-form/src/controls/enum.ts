@@ -3,4 +3,6 @@ export enum ControlType {
     Input = 'Input',
     Select = 'Select',
     Color = 'Color',
+    Checkbox = 'Checkbox',
+    Switch = 'Switch',
 }

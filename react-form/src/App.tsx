@@ -14,6 +14,12 @@ const formDef: FormDefinition = {
         default: 'red',
         validators: [ColorValidator],
     },
+    enableFont: {
+        kind: FormItemKind.Control,
+        type: ControlType.Switch,
+        label: Promise.resolve('启用字体'),
+        default: true,
+    },
     font: {
         kind: FormItemKind.Group,
         label: Promise.resolve('字体'),
@@ -33,6 +39,20 @@ const formDef: FormDefinition = {
             }
         },
         controls: {
+            fontStyle: {
+                kind: FormItemKind.Control,
+                label: Promise.resolve('字体样式'),
+                type: ControlType.Select,
+                default: 'Microsoft Yahei',
+                params: {
+                    options: [
+                        {
+                            value: 'Microsoft Yahei',
+                            label: Promise.resolve('微软雅黑'),
+                        },
+                    ],
+                },
+            },
             fontColor: {
                 kind: FormItemKind.Control,
                 label: Promise.resolve('字体颜色'),

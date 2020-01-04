@@ -2,7 +2,7 @@ import React from 'react';
 import { GroupFC, IGroup } from '../form';
 import './column-group.css';
 import { GroupType } from './enum';
-import { usePromise } from '../hooks';
+import { PromisedText } from '../components';
 
 export interface ColumnParams {
     columns: number;
@@ -10,13 +10,16 @@ export interface ColumnParams {
 
 export const Group: GroupFC<ColumnParams> = ({ controls, params, label }) => {
     const splitedControls = split(controls, params?.columns ?? 2);
-    const [text] = usePromise(label ?? Promise.resolve(null));
     return (
         <div className="ColumnContainer">
-            {text ? <span className="ColumnLabel">--{text}--</span> : <></>}
+            <PromisedText textPromise={label}></PromisedText>
             {splitedControls.map((sub, index) => (
-                <div className="ColumnItem" key={index}>
-                    {sub}
+                <div className="Row" key={index}>
+                    {sub.map((node, index) => (
+                        <div key={index} className="Column">
+                            {node}
+                        </div>
+                    ))}
                 </div>
             ))}
         </div>
@@ -24,9 +27,6 @@ export const Group: GroupFC<ColumnParams> = ({ controls, params, label }) => {
 };
 
 function split<T>(target: T[], step: number) {
-    if (step === 1) {
-        return target;
-    }
     return target
         .map((_, index: number) =>
             index % step === 0
@@ -35,7 +35,7 @@ function split<T>(target: T[], step: number) {
                   )
                 : []
         )
-        .filter((x: any[]) => x.length > 0) as React.ReactNode[];
+        .filter((x: any[]) => x.length > 0);
 }
 
 export const ColumnGroup: IGroup = {

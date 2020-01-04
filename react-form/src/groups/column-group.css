@@ -3,22 +3,24 @@
     flex-direction: column;
 }
 
-.ColumnItem {
-    display: flex;
-}
-
 .ColumnLabel {
     margin-bottom: 4px;
 }
 
-.ColumnItem + .ColumnItem {
+.Row {
+    display: flex;
+}
+
+.Row + .Row {
     margin-top: 12px;
 }
 
-.ColumnItem > * {
+.Column {
     flex: 1;
+    display: flex;
+    align-items: center;
 }
 
-.ColumnItem > * + * {
+.Column + .Column {
     margin-left: 30px;
 }

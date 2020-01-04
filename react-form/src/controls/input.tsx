@@ -3,7 +3,7 @@ import { ControlFC, IControl } from '../form';
 import { ControlType } from './enum';
 import { Input } from 'antd';
 
-export const Control: ControlFC<string> = ({ value, onChange, disabled }) => {
+const Control: ControlFC<string> = ({ value, onChange, disabled }) => {
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         onChange(event.target.value);
     }

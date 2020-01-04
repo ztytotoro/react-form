@@ -3,7 +3,7 @@ import { ControlFC, IControl } from '../form';
 import { ControlType } from './enum';
 import { InputNumber } from 'antd';
 
-export const Control: ControlFC<number | undefined, InputNumberParams> = ({
+const Control: ControlFC<number | undefined, InputNumberParams> = ({
     value,
     onChange,
     disabled,
