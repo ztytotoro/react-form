@@ -1,4 +1,5 @@
-import { ColumnGroup } from './column-group';
+import { TabGroup } from './tab';
+import { ColumnGroup } from './column';
 
-export const groups = [ColumnGroup];
+export const groups = [ColumnGroup, TabGroup];
 export * from './enum';

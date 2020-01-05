@@ -11,23 +11,29 @@ import { useState } from 'react';
 
 export function renderGroup(group: FormGroup<any>): ControlList {
     return group.controlList.map((control, index) => {
+        let node: JSX.Element;
         if (control.kind === FormItemKind.Control) {
-            return (
+            node = (
                 <RenderedControl
                     key={control.name}
                     control={control as FormControl<any>}
                 ></RenderedControl>
             );
-        }
-        if (control.kind === FormItemKind.Group) {
-            return (
+        } else if (control.kind === FormItemKind.Group) {
+            node = (
                 <RenderedGroup
                     key={control.name ?? index}
                     group={control as FormGroup<any>}
                 ></RenderedGroup>
             );
+        } else {
+            node = <></>;
         }
-        return <></>;
+        return {
+            groupParams: control.definition.groupParams,
+            element: node,
+            name: control.name,
+        };
     });
 }
 

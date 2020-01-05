@@ -1,6 +1,6 @@
 import React from 'react';
 import { GroupFC, IGroup } from '../form';
-import './column-group.css';
+import './column.css';
 import { GroupType } from './enum';
 import { PromisedText } from '../components';
 
@@ -15,11 +15,15 @@ export const Group: GroupFC<ColumnParams> = ({ controls, params, label }) => {
             <PromisedText textPromise={label}></PromisedText>
             {splitedControls.map((sub, index) => (
                 <div className="Row" key={index}>
-                    {sub.map((node, index) => (
-                        <div key={index} className="Column">
-                            {node}
-                        </div>
-                    ))}
+                    {sub.map((node, index) =>
+                        node ? (
+                            <div key={index} className="Column">
+                                {node.element}
+                            </div>
+                        ) : (
+                            <></>
+                        )
+                    )}
                 </div>
             ))}
         </div>

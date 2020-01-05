@@ -1,3 +1,4 @@
 export enum GroupType {
-  Column = 'Column'
+    Column = 'Column',
+    Tab = 'Tab',
 }

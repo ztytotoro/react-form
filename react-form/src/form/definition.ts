@@ -10,14 +10,16 @@ export interface ControlProps<T extends any, TParams extends any> {
 
 export type ControlFC<T, TParams = any> = React.FC<ControlProps<T, TParams>>;
 
-export interface GroupProps<TParams extends any> {
+export interface GroupProps<TParams extends any, TItemParams = any> {
     params?: TParams;
-    controls: ControlList;
+    controls: ControlList<TItemParams>;
     visible: boolean;
     label?: Promise<string>;
 }
 
-export type GroupFC<TParams = any> = React.FC<GroupProps<TParams>>;
+export type GroupFC<TParams = any, TItemParams = any> = React.FC<
+    GroupProps<TParams, TItemParams>
+>;
 
 export enum FormItemKind {
     Control = 'Control',
@@ -63,7 +65,12 @@ export interface IGroup {
     component: GroupFC<any>;
 }
 
-export type ControlList = (ControlList | JSX.Element)[];
+export type ControlList<T = any> = {
+    element: ControlList | JSX.Element;
+
+    groupParams?: T;
+    name: string;
+}[];
 
 export type PickValue<T extends FormDefinition> = {
     [K in keyof T]: T[K] extends GroupDefinition<any>
