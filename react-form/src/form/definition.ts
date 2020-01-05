@@ -66,8 +66,7 @@ export interface IGroup {
 }
 
 export type ControlList<T = any> = {
-    element: ControlList | JSX.Element;
-
+    element: JSX.Element;
     groupParams?: T;
     name: string;
 }[];

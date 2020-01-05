@@ -34,9 +34,9 @@ function split<T>(target: T[], step: number) {
     return target
         .map((_, index: number) =>
             index % step === 0
-                ? Array.from(Array(step).keys()).map(
-                      (x: number) => target[index + x]
-                  )
+                ? Array.from(Array(step).keys())
+                      .map((x: number) => target[index + x])
+                      .filter(x => x !== undefined)
                 : []
         )
         .filter((x: any[]) => x.length > 0);
