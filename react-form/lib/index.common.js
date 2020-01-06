@@ -505,6 +505,7 @@ exports.FormBase = FormBase;
 exports.FormControl = FormControl;
 exports.FormGroup = FormGroup;
 exports.PromisedText = PromisedText;
+exports.RenderedGroup = RenderedGroup;
 exports.Store = Store;
 exports.renderForm = renderForm;
 exports.setup = setup;

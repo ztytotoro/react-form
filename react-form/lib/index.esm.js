@@ -495,4 +495,4 @@ function renderForm(formDef, container) {
     return form;
 }
 
-export { FormBase, FormControl, FormGroup, FormItemKind, PromisedText, Store, renderForm, setup, useControls, useGroups };
+export { FormBase, FormControl, FormGroup, FormItemKind, PromisedText, RenderedGroup, Store, renderForm, setup, useControls, useGroups };

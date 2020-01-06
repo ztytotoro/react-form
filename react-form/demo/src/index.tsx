@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { useControls, useGroups } from './form';
 import { controls } from './controls';
 import { groups } from './groups';
+import { useControls, useGroups } from 'react-formq';
 
 useControls(controls);
 useGroups(groups);
