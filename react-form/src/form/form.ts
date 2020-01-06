@@ -1,276 +1,259 @@
 import { Subject } from 'rxjs';
 import {
-    FormItemBase,
-    GroupDefinition,
-    ControlDefinition,
-    FormValueType,
-    FormDefinition,
-    FormItemKind,
+  FormItemBase,
+  GroupDefinition,
+  ControlDefinition,
+  FormValueType,
+  FormItemKind
 } from './definition';
-import { GroupType } from '../groups';
 
 export abstract class FormBase<
-    TDefinition extends FormItemBase<any>,
-    TValue = FormValueType<TDefinition>
+  TDefinition extends FormItemBase<any>,
+  TValue = FormValueType<TDefinition>
 > {
-    protected error$ = new Subject<string[]>();
-    protected valueChange$ = new Subject<void>();
-    protected stateChange$ = new Subject<void>();
-    private _visible = true;
-    private _isValid = true;
+  protected error$ = new Subject<string[]>();
+  protected valueChange$ = new Subject<void>();
+  protected stateChange$ = new Subject<void>();
+  private _visible = true;
+  private _isValid = true;
 
-    constructor(private _definition: TDefinition) {
-        this.valueChange$.subscribe(() => {
-            this.validate();
-            this.definition.onChange?.(this as any);
-        });
+  constructor(private _definition: TDefinition) {
+    this.valueChange$.subscribe(() => {
+      this.validate();
+      this.definition.onChange?.(this as any);
+    });
+  }
+
+  abstract get value(): TValue | null;
+
+  abstract get group(): FormGroup<any> | null;
+
+  get isValid() {
+    return this._isValid;
+  }
+
+  validate() {
+    const tasks: Promise<string>[] = [];
+    this.validators?.forEach(v => {
+      const result = v(this.value);
+      if (result) {
+        tasks.push(result);
+      }
+    });
+    if (tasks.length > 0) {
+      this._isValid = false;
+      Promise.all(tasks).then(result => this.error$.next(result));
+    } else {
+      this._isValid = true;
     }
+    this.stateChange$.next();
+  }
 
-    abstract get value(): TValue | null;
+  get definition() {
+    return this._definition;
+  }
 
-    abstract get group(): FormGroup<any> | null;
+  get default() {
+    return this.definition.default;
+  }
 
-    get isValid() {
-        return this._isValid;
-    }
+  get kind() {
+    return this.definition.kind;
+  }
 
-    validate() {
-        const tasks: Promise<string>[] = [];
-        this.validators?.forEach(v => {
-            const result = v(this.value);
-            if (result) {
-                tasks.push(result);
-            }
-        });
-        if (tasks.length > 0) {
-            this._isValid = false;
-            Promise.all(tasks).then(result => this.error$.next(result));
-        } else {
-            this._isValid = true;
-        }
-        this.stateChange$.next();
-    }
+  get validators() {
+    return this.definition.validators;
+  }
 
-    get definition() {
-        return this._definition;
-    }
+  get visible() {
+    return this._visible;
+  }
 
-    get default() {
-        return this.definition.default;
-    }
+  abstract enable(): void;
 
-    get kind() {
-        return this.definition.kind;
-    }
+  abstract disable(): void;
 
-    get validators() {
-        return this.definition.validators;
-    }
+  abstract setValue(newValue: TValue | null): void;
 
-    get visible() {
-        return this._visible;
-    }
+  abstract reset(): void;
 
-    abstract enable(): void;
+  abstract name: string;
 
-    abstract disable(): void;
+  show() {
+    this._visible = true;
+    this.stateChange$.next();
+  }
 
-    abstract setValue(newValue: TValue | null): void;
+  hide() {
+    this._visible = false;
+    this.stateChange$.next();
+  }
 
-    abstract reset(): void;
+  onError(cb: (errorTips: string[]) => void) {
+    this.error$.subscribe(cb);
+  }
 
-    abstract name: string;
+  onChange(cb: (formItem: FormControl<any> | FormGroup<any>) => void) {
+    this.valueChange$.subscribe(() => cb(this as any));
+  }
 
-    show() {
-        this._visible = true;
-        this.stateChange$.next();
-    }
+  onStateChange(cb: () => void) {
+    this.stateChange$.subscribe(cb);
+  }
 
-    hide() {
-        this._visible = false;
-        this.stateChange$.next();
-    }
-
-    onError(cb: (errorTips: string[]) => void) {
-        this.error$.subscribe(cb);
-    }
-
-    onChange(cb: (formItem: FormControl<any> | FormGroup<any>) => void) {
-        this.valueChange$.subscribe(() => cb(this as any));
-    }
-
-    onStateChange(cb: () => void) {
-        this.stateChange$.subscribe(cb);
-    }
-
-    dispose() {
-        this.error$.unsubscribe();
-        this.valueChange$.unsubscribe();
-    }
+  dispose() {
+    this.error$.unsubscribe();
+    this.valueChange$.unsubscribe();
+  }
 }
 
 export class FormControl<T extends any> extends FormBase<ControlDefinition<T>> {
-    private _value: T | null = null;
-    private _disabled = false;
+  private _value: T | null = null;
+  private _disabled = false;
 
-    constructor(
-        public readonly name: string,
-        definition: ControlDefinition<T>,
-        private _group: FormGroup<any>
-    ) {
-        super(definition);
-        this.reset();
-    }
+  constructor(
+    public readonly name: string,
+    definition: ControlDefinition<T>,
+    private _group: FormGroup<any>
+  ) {
+    super(definition);
+    this.reset();
+  }
 
-    get value() {
-        return this._value;
-    }
+  get value() {
+    return this._value;
+  }
 
-    get group() {
-        return this._group;
-    }
+  get group() {
+    return this._group;
+  }
 
-    get disabled() {
-        return this._disabled;
-    }
+  get disabled() {
+    return this._disabled;
+  }
 
-    enable() {
-        this._disabled = false;
-        this.stateChange$.next();
-    }
+  enable() {
+    this._disabled = false;
+    this.stateChange$.next();
+  }
 
-    disable() {
-        this._disabled = true;
-        this.stateChange$.next();
-    }
+  disable() {
+    this._disabled = true;
+    this.stateChange$.next();
+  }
 
-    setValue(newValue: T | null) {
-        this._value = newValue;
-        this.valueChange$.next();
-        this.stateChange$.next();
-    }
+  setValue(newValue: T | null) {
+    this._value = newValue;
+    this.valueChange$.next();
+    this.stateChange$.next();
+  }
 
-    reset() {
-        this.setValue(this.default ?? this.group.default?.[this.name] ?? null);
-    }
+  reset() {
+    this.setValue(this.default ?? this.group.default?.[this.name] ?? null);
+  }
 }
 
 export class FormGroup<T extends any> extends FormBase<GroupDefinition<T>> {
-    private _controlMap = new Map<string, FormControl<any> | FormGroup<any>>();
+  private _controlMap = new Map<string, FormControl<any> | FormGroup<any>>();
 
-    constructor(
-        public readonly name: string,
-        definition: GroupDefinition<T>,
-        private _group: FormGroup<any> | null = null
-    ) {
-        super(definition);
-        Object.entries(definition.controls).forEach(([name, control]) => {
-            if (control.kind === FormItemKind.Control) {
-                this._controlMap.set(
-                    name,
-                    new FormControl(
-                        name,
-                        control as ControlDefinition<any>,
-                        this
-                    )
-                );
-            } else if (control.kind === FormItemKind.Group) {
-                this._controlMap.set(
-                    name,
-                    new FormGroup(name, control as GroupDefinition<any>, this)
-                );
-            }
-        });
-        this.controlList.forEach(control =>
-            control.onChange(() => this.valueChange$.next())
+  constructor(
+    public readonly name: string,
+    definition: GroupDefinition<T>,
+    private _group: FormGroup<any> | null = null
+  ) {
+    super(definition);
+    Object.entries(definition.controls).forEach(([name, control]) => {
+      if (control.kind === FormItemKind.Control) {
+        this._controlMap.set(
+          name,
+          new FormControl(name, control as ControlDefinition<any>, this)
         );
-        this.reset();
-    }
-
-    get group() {
-        return this._group;
-    }
-
-    get controlMap() {
-        return this._controlMap;
-    }
-
-    get controls() {
-        const controls: {
-            [key: string]: FormControl<any> | FormGroup<any>;
-        } = {};
-        this.controlMap.forEach((v, k) => {
-            controls[k] = v;
-        });
-        return controls;
-    }
-
-    get controlList() {
-        return Array.from(this.controlMap.values());
-    }
-
-    get value() {
-        const value = {} as T;
-        this.controlMap.forEach((v, k) => {
-            value[k] = v.value;
-        });
-        return value;
-    }
-
-    setValue(newValue: T | null) {
-        this.controlMap.forEach((v, k) => {
-            v.setValue(newValue?.[k] ?? null);
-        });
-    }
-
-    reset() {
-        this.controlMap.forEach(v => {
-            v.reset();
-        });
-    }
-
-    enable() {
-        this.controlMap.forEach(v => {
-            v.enable();
-        });
-    }
-
-    disable() {
-        this.controlMap.forEach(v => {
-            v.disable();
-        });
-    }
-
-    get(path: string | string[]): FormGroup<any> | FormControl<any> | null {
-        if (typeof path === 'string') {
-            path = path.split('.');
-        }
-        if (path.length > 0) {
-            const name = path.shift();
-            const item = this.controlMap.get(name as string);
-            if (item?.kind === FormItemKind.Group) {
-                return (item as FormGroup<any>).get(path);
-            }
-            if (item?.kind === FormItemKind.Control) {
-                return path.length > 0 ? null : item;
-            }
-        }
-        return this;
-    }
-
-    dispose() {
-        super.dispose();
-        this.controlList.forEach(control => control.dispose());
-    }
-}
-
-export function makeForm(definition: FormDefinition) {
-    return new FormGroup('$root', {
-        kind: FormItemKind.Group,
-        type: GroupType.Column,
-        controls: definition,
-        params: {
-            columns: 1,
-        },
+      } else if (control.kind === FormItemKind.Group) {
+        this._controlMap.set(
+          name,
+          new FormGroup(name, control as GroupDefinition<any>, this)
+        );
+      }
     });
+    this.controlList.forEach(control =>
+      control.onChange(() => this.valueChange$.next())
+    );
+    this.reset();
+  }
+
+  get group() {
+    return this._group;
+  }
+
+  get controlMap() {
+    return this._controlMap;
+  }
+
+  get controls() {
+    const controls: {
+      [key: string]: FormControl<any> | FormGroup<any>;
+    } = {};
+    this.controlMap.forEach((v, k) => {
+      controls[k] = v;
+    });
+    return controls;
+  }
+
+  get controlList() {
+    return Array.from(this.controlMap.values());
+  }
+
+  get value() {
+    const value = {} as T;
+    this.controlMap.forEach((v, k) => {
+      value[k] = v.value;
+    });
+    return value;
+  }
+
+  setValue(newValue: T | null) {
+    this.controlMap.forEach((v, k) => {
+      v.setValue(newValue?.[k] ?? null);
+    });
+  }
+
+  reset() {
+    this.controlMap.forEach(v => {
+      v.reset();
+    });
+  }
+
+  enable() {
+    this.controlMap.forEach(v => {
+      v.enable();
+    });
+  }
+
+  disable() {
+    this.controlMap.forEach(v => {
+      v.disable();
+    });
+  }
+
+  get(path: string | string[]): FormGroup<any> | FormControl<any> | null {
+    if (typeof path === 'string') {
+      path = path.split('.');
+    }
+    if (path.length > 0) {
+      const name = path.shift();
+      const item = this.controlMap.get(name as string);
+      if (item?.kind === FormItemKind.Group) {
+        return (item as FormGroup<any>).get(path);
+      }
+      if (item?.kind === FormItemKind.Control) {
+        return path.length > 0 ? null : item;
+      }
+    }
+    return this;
+  }
+
+  dispose() {
+    super.dispose();
+    this.controlList.forEach(control => control.dispose());
+  }
 }

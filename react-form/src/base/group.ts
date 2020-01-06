@@ -1,5 +1,5 @@
 import { makeFactory } from '../utils';
-import { GroupFC } from './definition';
+import { GroupFC } from '../form/definition';
 
 export const [registerGroup, getGroup] = makeFactory<GroupFC<any>>();
 

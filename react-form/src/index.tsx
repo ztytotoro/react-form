@@ -1,18 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-import { useControls, useGroups } from './form';
-import { controls } from './controls';
-import { groups } from './groups';
+import { GroupDefinition, FormGroup } from './form';
+import { RenderedGroup } from './components';
+import { useControls, useGroups } from './base';
 
-useControls(controls);
-useGroups(groups);
+export * from './form';
+export * from './validator';
+export { Store } from './utils';
+export { PromisedText } from './components';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+export { useControls, useGroups };
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+export function setup(
+  handle: (fn: {
+    useControls: typeof useControls;
+    useGroups: typeof useGroups;
+  }) => void
+) {
+  handle({
+    useControls,
+    useGroups
+  });
+}
+
+function makeForm(form: GroupDefinition<any>) {
+  return new FormGroup('$root', form);
+}
+
+export function renderForm(
+  formDef: GroupDefinition<any>,
+  container: HTMLElement
+) {
+  const form = makeForm(formDef);
+  ReactDOM.render(<RenderedGroup group={form}></RenderedGroup>, container);
+  return form;
+}

@@ -1,5 +1,5 @@
 import { makeFactory } from '../utils';
-import { ControlFC } from './definition';
+import { ControlFC } from '../form/definition';
 
 export const [registerControl, getControl] = makeFactory<ControlFC<any>>();
 
